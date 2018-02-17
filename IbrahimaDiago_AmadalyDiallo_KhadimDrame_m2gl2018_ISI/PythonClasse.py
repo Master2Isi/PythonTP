@@ -91,7 +91,7 @@ class Employe:
         cursor.execute ("DROP TABLE IF EXISTS employee")
         sql_command = """
         CREATE TABLE employee ( 
-        id INTEGER PRIMARY KEY, 
+        id INTEGER PRIMARY KEY , 
         num_matri VARCHAR(20), 
         nom VARCHAR(30),
         prenom VARCHAR(30),
@@ -102,20 +102,7 @@ class Employe:
 
         cursor.execute(sql_command)
         print("create")
-    @staticmethod    
-    def create_table_Serv():
-        cursor.execute ("DROP TABLE IF EXISTS service")
-        sql_command = """
-        CREATE TABLE service ( 
-        id INTEGER PRIMARY KEY,
-        date_creation DATE,
-        matri_res VARCHAR(20) 
-        
-        );"""
-
-        cursor.execute(sql_command)
-        print("create")
-
+    
     
     @staticmethod
     def data_entry_Emp():
@@ -136,43 +123,49 @@ class Employe:
             sys.exit(1)
 
         cursor = connection.cursor()
-        cursor.execute("INSERT INTO employee (id,num_matri,nom,prenom,email,adresse,service) VALUES (?,?,?,?,?,?,?)",
-                  (employe.getId(),employe.getMat(),employe.getNom(),employe.getPrenom(),employe.getEmail(),employe.getAdresse(),employe.getService()))
+        cursor.execute("INSERT INTO employe (id,num_matri,nom,prenom,email,adresse,service) VALUES ('%d','%s','%s','%s','%s','%s','%d')",
+                  employe)
         connection.commit()
         print("Une employe  a été ajouté ")
 
         
-    def data_entry_Serv():
-       
-        date=str(datetime.datetime.fromtimestamp(unix).strftime('%Y-%m-%d %H:%M:%S'))
-#       keyword='Python'      
-        cursor.execute("INSERT INTO Personne (num_matri,nom,prenom,adresse,email,adresse) VALUES (?,?,?,?)",
-                  (self.num_matri,self.nom,self.prenom,self.email,self.adresse))
-        connection.commit()
-                
-        
-    def read_from_db_Pers():
-        cursor.execute('select  * from Employe')
+    
+    @staticmethod   
+    def read_from_db_Emp():
+        try:
+            connection = mc.connect (host = "localhost",
+                             user = "root",
+                             passwd = "",
+                             db = "pythonClasse")
+        except mc.Error as e:
+            print("Error %d: %s" % (e.args[0], e.args[1]))
+            sys.exit(1)
+
+        cursor = connection.cursor()
+        cursor.execute('select  * from employe')
         #data = cursor.fetchall()
         #print(data)
         for row in cursor.fetchall():
             print("matricule: "+row[1],"nom: "+row[2], "prenom: "+row[3]) 
-    def AffichagePer() :
+    @staticmethod
+    def AffichageEmp() :
         print("***************Affichage de la liste du  des Employe*****************")
-        read_from_db_Pers()        
+        employe=Employe()
+        employe.read_from_db_Emp()        
             
 while True:
     print("0 -> Ajouter un employer dans la base")
     print("1 -> creer la table employe")
-    print("2 -> Ajouter un service dans la base")
-    print("3 -> Affichage des services")
-    print("4 -> Quitter")
+    print("2 -> Affichage de la liste des employe")
+    print("3 -> Modification d'un employe ")
+    print("4 -> Supression")
+    print("5 -> Quitter")
     try:
             choix=int(input('Faites votre choix: '))
     except Exception:
             print("Choix érroné")
             continue
-    if(choix in range (0,5)) :
+    if(choix in range (0,6)) :
     
         if(choix==0) :
             employe=Employe()
@@ -181,6 +174,9 @@ while True:
         elif(choix ==1):
             employe=Employe()
             employe.create_table_Pers()
+        elif(choix ==2):
+            employe=Employe()
+            employe.AffichageEmp()    
         else:
             print("Au revoir")
             break
