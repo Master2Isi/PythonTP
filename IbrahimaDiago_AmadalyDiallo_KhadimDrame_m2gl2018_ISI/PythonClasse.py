@@ -4,30 +4,45 @@ Created on Thu Feb 15 15:13:24 2018
 
 @author: AmaDaly
 """
-import sqlite3
 
 import datetime
 import random
-import pymysql
-conn=sqlite3.connect('Personne.db')
-#conn =pymysql.connect(host="localhost",user="root",passwd="",db="my_python")
-c=conn.cursor()
+import sys
+import mysql.connector as mc
+
+try:
+    connection = mc.connect (host = "localhost",
+                             user = "root",
+                             passwd = "",
+                             db = "pythonClasse")
+except mc.Error as e:
+    print("Error %d: %s" % (e.args[0], e.args[1]))
+    sys.exit(1)
+
+cursor = connection.cursor()
 class Employe:
     liste=[]
     
     def __init__(self):
         self.id=""
+        self.num_matri=""
         self.nom=""
         self.prenom=""
         self.adresse=""
         self.email=""
-        Personne.liste.append(self)
-        
-        # Pour l'id
+        self.service=""
+        Employe.liste.append(self)
+     
+     # Pour l'id
     def getId(self):
         return self.id
     def setId(self, id):
-        self.id=id
+        self.id=id   
+        # Pour le matricule
+    def getMat(self):
+        return self.num_matri
+    def setMat(self, num_matri):
+        self.num_matri=num_matri
         
     # Pour le nom
     def getNom(self):
@@ -52,64 +67,120 @@ class Employe:
         return self.adresse
     def setAdresse(self, adresse):
         self.adresse=adresse
+     # Pour le service
+    def getService(self):
+        return self.service
+    def setService(self, service):
+        self.service=service   
         
+    
+    @staticmethod    
+    def create_table_Emp():
         
-    def AffichagePer() :
-        print("***************Affichage de la liste du  des Employe*****************")
-        read_from_db_Pers()
+        try:
+            connection = mc.connect (host = "localhost",
+                             user = "root",
+                             passwd = "",
+                             db = "pythonClasse")
+        except mc.Error as e:
+            print("Error %d: %s" % (e.args[0], e.args[1]))
+            sys.exit(1)
+
+        cursor = connection.cursor()
         
-    def create_table_Pers():
-        c.execute('CREATE TABLE IF NOT EXISTS Personne( id int primary key,nom TEXT, prenom TEXT ,adresse TEXT ,email TEXT)')
+        cursor.execute ("DROP TABLE IF EXISTS employee")
+        sql_command = """
+        CREATE TABLE employee ( 
+        id INTEGER PRIMARY KEY, 
+        num_matri VARCHAR(20), 
+        nom VARCHAR(30),
+        prenom VARCHAR(30),
+        email VARCHAR(30),
+        adresse VARCHAR(60),
+        service INTEGER 
+        );"""
+
+        cursor.execute(sql_command)
+        print("create")
+    @staticmethod    
+    def create_table_Serv():
+        cursor.execute ("DROP TABLE IF EXISTS service")
+        sql_command = """
+        CREATE TABLE service ( 
+        id INTEGER PRIMARY KEY,
+        date_creation DATE,
+        matri_res VARCHAR(20) 
+        
+        );"""
+
+        cursor.execute(sql_command)
         print("create")
 
     
-    def dynamic_data_entry_Pers():
-        nom= self.Nom
-        prenom=self.Prenom
+    @staticmethod
+    def data_entry_Emp():
+        employe= Employe()
+        employe.setMat(input("mat : "))
+        employe.setNom(input("Nom : "))
+        employe.setPrenom(input("Prenom : "))
+        employe.setEmail(input("Email : "))
+        employe.setAdresse(input("Adresse : "))
+        employe.setService(int(input("Service : ")))
+        try:
+            connection = mc.connect (host = "localhost",
+                             user = "root",
+                             passwd = "",
+                             db = "pythonClasse")
+        except mc.Error as e:
+            print("Error %d: %s" % (e.args[0], e.args[1]))
+            sys.exit(1)
+
+        cursor = connection.cursor()
+        cursor.execute("INSERT INTO employee (id,num_matri,nom,prenom,email,adresse,service) VALUES (?,?,?,?,?,?,?)",
+                  (employe.getId(),employe.getMat(),employe.getNom(),employe.getPrenom(),employe.getEmail(),employe.getAdresse(),employe.getService()))
+        connection.commit()
+        print("Une employe  a été ajouté ")
+
         
+    def data_entry_Serv():
+       
         date=str(datetime.datetime.fromtimestamp(unix).strftime('%Y-%m-%d %H:%M:%S'))
-        keyword='Python'
-        value=random.randrange(0,10)
-        c.execute("INSERT INTO Personne (nom,prenom,adresse,email,adresse) VALUES (?,?,?,?)",
-                  (nom,prenom,email,adresse))
-        conn.commit()
+#       keyword='Python'      
+        cursor.execute("INSERT INTO Personne (num_matri,nom,prenom,adresse,email,adresse) VALUES (?,?,?,?)",
+                  (self.num_matri,self.nom,self.prenom,self.email,self.adresse))
+        connection.commit()
+                
         
     def read_from_db_Pers():
-        c.execute('select  * from Personne')
-        #data = c.fetchall()
+        cursor.execute('select  * from Employe')
+        #data = cursor.fetchall()
         #print(data)
-        for row in c.fetchall():
-            print(row[2])  
+        for row in cursor.fetchall():
+            print("matricule: "+row[1],"nom: "+row[2], "prenom: "+row[3]) 
+    def AffichagePer() :
+        print("***************Affichage de la liste du  des Employe*****************")
+        read_from_db_Pers()        
             
-    while True:
-        print("0 -> Ajouter une personne dans une base")
-        print("1 -> Affichage des personne")
-        print("2 -> Ajouter un service dans la base")
-        print("3 -> Affichage des services")
-        print("4 -> Quitter")
-        try:
+while True:
+    print("0 -> Ajouter un employer dans la base")
+    print("1 -> creer la table employe")
+    print("2 -> Ajouter un service dans la base")
+    print("3 -> Affichage des services")
+    print("4 -> Quitter")
+    try:
             choix=int(input('Faites votre choix: '))
-        except Exception:
+    except Exception:
             print("Choix érroné")
             continue
-        if(choix in range (0,5)) :
+    if(choix in range (0,5)) :
     
-            if(choix==0) :
-                print("Entrez les Informations sur la personne:")
-                employe= Employe()
-                #id=personne.setId(int(input("id : ")))
-                nom   =employe.setNom(input("Nom : "))
-                prenom=employe.setPrenom(input("Prenom : "))
-                email =employe.setEmail(input("Email : "))
-                adresse= employe.setAdresse(input("Adresse : "))
-               
-                c.execute("INSERT INTO Personne (nom,prenom,adresse,email,adresse) VALUES (?,?,?,?)",
-                  (nom,prenom,email,adresse))
-                conn.commit()
-                print("Une employe  a été ajouté ")
-                #personne.dynamic_data_entry_Pers()
-            elif(choix ==1):
-                personne.AffichagePer()
-            else:
-                print("Au revoir")
-                break
+        if(choix==0) :
+            employe=Employe()
+            employe.data_entry_Emp()       
+                
+        elif(choix ==1):
+            employe=Employe()
+            employe.create_table_Pers()
+        else:
+            print("Au revoir")
+            break
