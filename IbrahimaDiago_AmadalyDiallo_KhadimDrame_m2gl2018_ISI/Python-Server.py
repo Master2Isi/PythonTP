@@ -13,6 +13,10 @@ class ClientThread(threading.Thread):
             data = self.csocket.recv(2048)
             msg = data.decode()
             confirmSms = "Ok bien recu /Entrer bye to quit"
+            confirmSms = "Ok bien recu /Entrer bye to quit"
+            okclient = "Connected to server"
+            okservice = "chargement vers dans service avec succes !"
+            okemploye = "chargement vers dans emplo avec succes !"
             if msg=='bye':
               break
             print ("from",clientAddress,":" , msg)
