@@ -47,8 +47,7 @@ class Service:
     def setDate(self, date_creation):
         self.date_creation=date_creation
         
-   
-    
+       
     
     @staticmethod    
     def create_table_Serv():
@@ -59,15 +58,12 @@ class Service:
         date_creation DATE,
         nomserv VARCHAR(20),
         res_matri VARCHAR(20) 
-        
         );"""
 
         cursor.execute(sql_command)
         print("\n Table crée avec success !\n")
 
     
-   
-
     @staticmethod      
     def data_entry_Serv():
         unix= time.time()
@@ -87,7 +83,9 @@ class Service:
             print("Error %d: %s" % (e.args[0], e.args[1]))
             sys.exit(1)
         
-        serv = {"nomserv": nomserv, "nomresp" : nomresp, "date" : date}
+        serv = {"date" : date, "nomserv": nomserv, "nomresp" : nomresp}
+        print(serv)
+        cursor = connection.cursor()
         cursor.execute("""INSERT INTO service (date_creation,nomserv,res_matri) VALUES (%(date)s,%(nomserv)s,%(nomresp)s)""",serv)
         #cursor.execute("""INSERT INTO service (date_creation,nomserv,res_matri) VALUES (%s,%s,%s)""",service)
         connection.commit()
@@ -106,35 +104,38 @@ class Service:
         cursor = connection.cursor()
         cursor.execute('select  * from service')
         for row in cursor.fetchall():
-                print("matricule responsable: "+row[1],"date creation: "+row[2]) 
+                print("Service: "+row[2],"date creation: "+row[1],"Mat Responsable: "+row[3]) 
     @staticmethod
     def AffichageServ() :
-        print("______________________Affichage de la liste du  des services_________________________")
+        print("___________________Affichage de la liste des services____________________")
         print("\n")
         service=Service()
-        service.read_from_db_Serv()        
+        service.read_from_db_Serv()
+        print("\n___________________________________")        
             
 while True:
-    print("0 -> Ajouter un service a la base")
-    print("1 -> creer la table service")
-    print("2 -> Afficher les servicew dans la base")
-    print("3 -> Modification d'un services")
+    print("\n ______________________MENU DE TEST DE LA CLASSE SERVICE_________________________")
+    print("\n")
+    print("1 -> Creer la table service")
+    print("2 -> Ajouter un service a la base")
+    print("3 -> Afficher les services de la base")
     print("4 -> Quitter")
     try:
+            print("\n")
             choix=int(input('Faites votre choix: '))
     except Exception:
             print("Choix érroné")
             continue
     if(choix in range (0,5)) :
     
-        if(choix==0) :
+        if(choix==2) :
             service=Service()
             service.data_entry_Serv()       
                 
         elif(choix ==1):
             service=Service()
             service.create_table_Serv()
-        elif(choix ==2):
+        elif(choix ==3):
             service=Service()
             service.AffichageServ()     
         else:
