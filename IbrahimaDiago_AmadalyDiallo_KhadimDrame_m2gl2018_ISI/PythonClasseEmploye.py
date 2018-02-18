@@ -124,8 +124,8 @@ class Employe:
         employe.setService(serv)
 
         #emp = (mat, nom, prenom, email, adr, serv)
-        emp = {"mat": mat, "nom" : nom, "prenom" : prenom, "email" : email, "adr" : adr, "serv" : serv : }
-        print(emp)
+        emp = {"mat": mat, "nom" : nom, "prenom" : prenom, "email" : email, "adr" : adr, "serv" : serv}
+        #print(emp)
         try:
             connection = mc.connect (host = "localhost",
                              user = "root",
@@ -136,9 +136,9 @@ class Employe:
             sys.exit(1)
 
         cursor = connection.cursor()
-        cursor.execute("""INSERT INTO employee (num_matri,nom,prenom,email,adresse,service) VALUES (%(mat)s,%(nom)s,%(prenom)s,%(email)s,%(name)s,%(name)s)""",emp)
+        cursor.execute("""INSERT INTO employee (num_matri,nom,prenom,email,adresse,service) VALUES (%(mat)s,%(nom)s,%(prenom)s,%(email)s,%(adr)s,%(serv)s)""",emp)
         connection.commit()
-        print("Une employe  a été ajouté ")
+        print("\n Employe ajouté avec success ! \n")
 
     
     @staticmethod   
@@ -160,32 +160,35 @@ class Employe:
             print("matricule: "+row[1],"nom: "+row[2], "prenom: "+row[3]) 
     @staticmethod
     def AffichageEmp() :
-        print("***************Affichage de la liste du  des Employe*****************")
+        print("______________________Affichage de la liste du  des Employe_________________________")
+        print("\n")
         employe=Employe()
-        employe.read_from_db_Emp()        
+        employe.read_from_db_Emp()
+        print("\n___________________________________")        
             
 while True:
-    print("0 -> Ajouter un employer dans la base")
+    print("______________________MENU DE TEST DE LA CLASSE EMPLOYE_________________________")
+    print("\n")
     print("1 -> creer la table employe")
-    print("2 -> Affichage de la liste des employe")
-    print("3 -> Modification d'un employe ")
-    print("4 -> Supression")
-    print("5 -> Quitter")
+    print("2 -> Ajouter un employer dans la base")
+    print("3 -> Affichage de la liste des employe")
+    print("4 -> Quitter")
     try:
+            print("\n")
             choix=int(input('Faites votre choix: '))
     except Exception:
             print("Choix érroné")
             continue
     if(choix in range (0,6)) :
     
-        if(choix==0) :
+        if(choix==2) :
             employe=Employe()
             employe.data_entry_Emp()       
                 
         elif(choix ==1):
             employe=Employe()
             employe.create_table_Emp()
-        elif(choix ==2):
+        elif(choix ==3):
             employe=Employe()
             employe.AffichageEmp()    
         else:
