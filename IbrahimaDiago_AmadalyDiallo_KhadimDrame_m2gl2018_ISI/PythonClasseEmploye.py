@@ -108,12 +108,24 @@ class Employe:
     @staticmethod
     def data_entry_Emp():
         employe= Employe()
-        employe.setMat(input("mat : "))
-        employe.setNom(input("Nom : "))
-        employe.setPrenom(input("Prenom : "))
-        employe.setEmail(input("Email : "))
-        employe.setAdresse(input("Adresse : "))
-        employe.setService(int(input("Service : ")))
+
+        mat = input("mat : ")
+        nom = input("Nom : ")
+        prenom = input("Prenom : ")
+        email = input("Email : ")
+        adr = input("Adresse : ")
+        serv = int(input("Service : "))
+
+        employe.setMat(mat)
+        employe.setNom(nom)
+        employe.setPrenom(prenom)
+        employe.setEmail(email)
+        employe.setAdresse(adr)
+        employe.setService(serv)
+
+        #emp = (mat, nom, prenom, email, adr, serv)
+        emp = {"mat": mat, "nom" : nom, "prenom" : prenom, "email" : email, "adr" : adr, "serv" : serv : }
+        print(emp)
         try:
             connection = mc.connect (host = "localhost",
                              user = "root",
@@ -124,12 +136,10 @@ class Employe:
             sys.exit(1)
 
         cursor = connection.cursor()
-        cursor.execute("INSERT INTO employe (id,num_matri,nom,prenom,email,adresse,service) VALUES ('%d','%s','%s','%s','%s','%s','%d')",
-                  employe)
+        cursor.execute("""INSERT INTO employee (num_matri,nom,prenom,email,adresse,service) VALUES (%(mat)s,%(nom)s,%(prenom)s,%(email)s,%(name)s,%(name)s)""",emp)
         connection.commit()
         print("Une employe  a été ajouté ")
 
-        
     
     @staticmethod   
     def read_from_db_Emp():
@@ -143,7 +153,7 @@ class Employe:
             sys.exit(1)
 
         cursor = connection.cursor()
-        cursor.execute('select  * from employe')
+        cursor.execute('select  * from employee')
         #data = cursor.fetchall()
         #print(data)
         for row in cursor.fetchall():
@@ -174,7 +184,7 @@ while True:
                 
         elif(choix ==1):
             employe=Employe()
-            employe.create_table_Pers()
+            employe.create_table_Emp()
         elif(choix ==2):
             employe=Employe()
             employe.AffichageEmp()    
