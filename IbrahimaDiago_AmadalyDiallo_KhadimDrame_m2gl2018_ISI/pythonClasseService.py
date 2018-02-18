@@ -54,14 +54,16 @@ class Service:
     def create_table_Serv():
         cursor.execute ("DROP TABLE IF EXISTS service")
         sql_command = """
-        CREATE TABLE service ( 
+        CREATE TABLE service (
+        id INTEGER PRIMARY KEY auto_increment, 
         date_creation DATE,
+        nomserv VARCHAR(20),
         res_matri VARCHAR(20) 
         
         );"""
 
         cursor.execute(sql_command)
-        print("create")
+        print("\n Table crée avec success !\n")
 
     
    
@@ -71,7 +73,10 @@ class Service:
         unix= time.time()
         date=str(datetime.datetime.fromtimestamp(unix).strftime('%Y-%m-%d %H:%M:%S'))
         service= Service()
-        service.setResp(input("matricule responsable : "))
+        nomserv = input("Nom du service : ")
+        nomresp = input("matricule responsable : ")
+        service.setResp(nomserv)
+        service.setResp(nomresp)
         service.setDate(date)
         try:
             connection = mc.connect (host = "localhost",
@@ -82,10 +87,11 @@ class Service:
             print("Error %d: %s" % (e.args[0], e.args[1]))
             sys.exit(1)
         
-        cursor.execute("""INSERT INTO service (date_creation,res_matri) VALUES ('%s' ,'%s')""",
-                  service)
+        serv = {"nomserv": nomserv, "nomresp" : nomresp, "date" : date}
+        cursor.execute("""INSERT INTO service (date_creation,nomserv,res_matri) VALUES (%(date)s,%(nomserv)s,%(nomresp)s)""",serv)
+        #cursor.execute("""INSERT INTO service (date_creation,nomserv,res_matri) VALUES (%s,%s,%s)""",service)
         connection.commit()
-        print("Une service  a été ajouté ")
+        print("\n Service ajouté avec succees !\n")
                 
     @staticmethod     
     def read_from_db_Serv():
@@ -103,7 +109,8 @@ class Service:
                 print("matricule responsable: "+row[1],"date creation: "+row[2]) 
     @staticmethod
     def AffichageServ() :
-        print("***************Affichage de la liste du  des Service*****************")
+        print("______________________Affichage de la liste du  des services_________________________")
+        print("\n")
         service=Service()
         service.read_from_db_Serv()        
             

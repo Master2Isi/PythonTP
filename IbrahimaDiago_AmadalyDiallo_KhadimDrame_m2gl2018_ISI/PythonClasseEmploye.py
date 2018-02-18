@@ -92,7 +92,7 @@ class Employe:
         cursor.execute ("DROP TABLE IF EXISTS employee")
         sql_command = """
         CREATE TABLE employee ( 
-        id INTEGER PRIMARY KEY , 
+        id INTEGER PRIMARY KEY auto_increment, 
         num_matri VARCHAR(20), 
         nom VARCHAR(30),
         prenom VARCHAR(30),
