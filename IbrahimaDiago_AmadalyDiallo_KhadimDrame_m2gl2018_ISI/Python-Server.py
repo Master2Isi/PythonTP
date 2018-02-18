@@ -15,8 +15,8 @@ class ClientThread(threading.Thread):
             confirmSms = "Ok bien recu /Entrer bye to quit"
             confirmSms = "Ok bien recu /Entrer bye to quit"
             okclient = "Connected to server"
-            okservice = "chargement vers dans service avec succes !"
-            okemploye = "chargement vers dans emplo avec succes !"
+            okservice = "chargement  dans service avec succes !"
+            okemploye = "chargement  dans emplo avec succes !"
             if msg=='bye':
               break
             print ("from",clientAddress,":" , msg)
