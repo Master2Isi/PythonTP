@@ -9,7 +9,6 @@ import datetime
 import random
 import sys
 import mysql.connector as mc
-
 try:
     connection = mc.connect (host = "localhost",
                              user = "root",
@@ -166,31 +165,3 @@ class Employe:
         employe.read_from_db_Emp()
         print("\n___________________________________")        
             
-while True:
-    print("______________________MENU DE TEST DE LA CLASSE EMPLOYE_________________________")
-    print("\n")
-    print("1 -> creer la table employe")
-    print("2 -> Ajouter un employer dans la base")
-    print("3 -> Affichage de la liste des employe")
-    print("4 -> Quitter")
-    try:
-            print("\n")
-            choix=int(input('Faites votre choix: '))
-    except Exception:
-            print("Choix érroné")
-            continue
-    if(choix in range (0,6)) :
-    
-        if(choix==2) :
-            employe=Employe()
-            employe.data_entry_Emp()       
-                
-        elif(choix ==1):
-            employe=Employe()
-            employe.create_table_Emp()
-        elif(choix ==3):
-            employe=Employe()
-            employe.AffichageEmp()    
-        else:
-            print("Au revoir")
-            break

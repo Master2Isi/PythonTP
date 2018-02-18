@@ -113,31 +113,3 @@ class Service:
         service.read_from_db_Serv()
         print("\n___________________________________")        
             
-while True:
-    print("\n ______________________MENU DE TEST DE LA CLASSE SERVICE_________________________")
-    print("\n")
-    print("1 -> Creer la table service")
-    print("2 -> Ajouter un service a la base")
-    print("3 -> Afficher les services de la base")
-    print("4 -> Quitter")
-    try:
-            print("\n")
-            choix=int(input('Faites votre choix: '))
-    except Exception:
-            print("Choix érroné")
-            continue
-    if(choix in range (0,5)) :
-    
-        if(choix==2) :
-            service=Service()
-            service.data_entry_Serv()       
-                
-        elif(choix ==1):
-            service=Service()
-            service.create_table_Serv()
-        elif(choix ==3):
-            service=Service()
-            service.AffichageServ()     
-        else:
-            print("Au revoir")
-            break
