@@ -47,30 +47,31 @@ class Service:
     def setDate(self, date_creation):
         self.date_creation=date_creation
         
-       
+   
+    
     
     @staticmethod    
     def create_table_Serv():
         cursor.execute ("DROP TABLE IF EXISTS service")
         sql_command = """
-        CREATE TABLE service (
-        id INTEGER PRIMARY KEY auto_increment, 
+        CREATE TABLE service ( 
         date_creation DATE,
-        nomserv VARCHAR(20),
         res_matri VARCHAR(20) 
+        
         );"""
 
         cursor.execute(sql_command)
-        print("\n Table crée avec success !\n")
+        print("create")
 
     
+   
+
     @staticmethod      
-    def data_entry_Serv(nomserv,nomresp):
+    def data_entry_Serv():
         unix= time.time()
         date=str(datetime.datetime.fromtimestamp(unix).strftime('%Y-%m-%d %H:%M:%S'))
         service= Service()
-        service.setResp(nomserv)
-        service.setResp(nomresp)
+        service.setResp(input("matricule responsable : "))
         service.setDate(date)
         try:
             connection = mc.connect (host = "localhost",
@@ -81,13 +82,10 @@ class Service:
             print("Error %d: %s" % (e.args[0], e.args[1]))
             sys.exit(1)
         
-        serv = {"date" : date, "nomserv": nomserv, "nomresp" : nomresp}
-        print(serv)
-        cursor = connection.cursor()
-        cursor.execute("""INSERT INTO service (date_creation,nomserv,res_matri) VALUES (%(date)s,%(nomserv)s,%(nomresp)s)""",serv)
-        #cursor.execute("""INSERT INTO service (date_creation,nomserv,res_matri) VALUES (%s,%s,%s)""",service)
+        cursor.execute("""INSERT INTO service (date_creation,res_matri) VALUES ('%s' ,'%s')""",
+                  service)
         connection.commit()
-        print("\n Service ajouté avec succees !\n")
+        print("Une service  a été ajouté ")
                 
     @staticmethod     
     def read_from_db_Serv():
@@ -102,17 +100,36 @@ class Service:
         cursor = connection.cursor()
         cursor.execute('select  * from service')
         for row in cursor.fetchall():
-                print("Service: "+row[2],"date creation: "+row[1],"Mat Responsable: "+row[3]) 
+                print("matricule responsable: "+row[1],"date creation: "+row[2]) 
     @staticmethod
     def AffichageServ() :
-        print("___________________Affichage de la liste des services____________________")
-        print("\n")
+        print("***************Affichage de la liste du  des Service*****************")
         service=Service()
-        service.read_from_db_Serv()
-        print("\n___________________________________")        
+        service.read_from_db_Serv()        
             
-
-# service=Service()
-# nomserv = input("Nom du service : ")
-# nomresp = input("matricule responsable : ")
-# service.data_entry_Serv(nomserv,nomresp) 
+while True:
+    print("0 -> Ajouter un service a la base")
+    print("1 -> creer la table service")
+    print("2 -> Afficher les servicew dans la base")
+    print("3 -> Modification d'un services")
+    print("4 -> Quitter")
+    try:
+            choix=int(input('Faites votre choix: '))
+    except Exception:
+            print("Choix érroné")
+            continue
+    if(choix in range (0,5)) :
+    
+        if(choix==0) :
+            service=Service()
+            service.data_entry_Serv()       
+                
+        elif(choix ==1):
+            service=Service()
+            service.create_table_Serv()
+        elif(choix ==2):
+            service=Service()
+            service.AffichageServ()     
+        else:
+            print("Au revoir")
+            break
